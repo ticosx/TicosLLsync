@@ -245,6 +245,23 @@ int QiotData::GetValue(uint8_t index, char *buf, uint16_t buf_len)
     return _childs[index].GetValue(buf, buf_len);
 }
 
+int QiotData::ValueLen()
+{
+    switch (_type) {
+    case BLE_QIOT_DATA_TYPE_INT:
+    case BLE_QIOT_DATA_TYPE_FLOAT:
+    case BLE_QIOT_DATA_TYPE_TIME:
+        return BLE_QIOT_DATA_INT_TYPE_LEN;
+    case BLE_QIOT_DATA_TYPE_ENUM:
+        return BLE_QIOT_DATA_ENUM_TYPE_LEN;
+    case BLE_QIOT_DATA_TYPE_BOOL:
+        return BLE_QIOT_DATA_BOOL_TYPE_LEN;
+    case BLE_QIOT_DATA_TYPE_STRING:
+        return _strVal.size();
+    }
+    return -1;
+}
+
 uint8_t QiotData::GetType()
 {
     int type = _type;
@@ -572,7 +589,33 @@ QiotData* ThingModel::GetPropertyCtx(uint8_t index)
     return (_properties->_childs.data() + index);
 }
 
+QiotData* ThingModel::GetPropertyCtx(const char *id)
+{
+    if (!_properties)
+        return NULL;
+    for (auto it = _properties->_childs.begin(); it !=  _properties->_childs.end(); ++it)
+        if (it->_id == id)
+            return &(*it);
+    return NULL;
+}
+
 bool ThingModel::ReportProperty(const char *id, const char *val)
+{
+    unsigned int i;
+    QiotData *property;
+    for (i = 0; i < _properties->ChildsCount(); ++ i) {
+        property = _properties->_childs.data() + i;
+        if (property->_id == id) {
+            if (property->SetValue(val)) {
+                return !ble_user_property_get_report_data(i, i + 1);
+            }
+            return false;
+        }
+    }
+    return false;
+}
+
+bool ThingModel::ReportProperty(const char *id, uint32_t val)
 {
     unsigned int i;
     QiotData *property;

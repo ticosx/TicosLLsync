@@ -23,6 +23,10 @@ public:
 
     int GetValue(uint8_t index, char *buf, uint16_t buf_len);
     int GetValue(char *buf, uint16_t buf_len);
+    uint32_t GetValue() {
+        return _val;
+    }
+    int ValueLen();
     QiotData *GetChildCtx(uint8_t index);
 
     uint8_t GetType();
@@ -75,7 +79,9 @@ public:
 
     uint8_t GetPropertyType(uint8_t index);
     QiotData *GetPropertyCtx(uint8_t index);
+    QiotData *GetPropertyCtx(const char *id);
     bool ReportProperty(const char *id, const char *val);
+    bool ReportProperty(const char *id, uint32_t val);
     void AddPropertyHandler(QiotDataHandler *handler) {
         _propertiesHandler.push_back(handler);
     }
