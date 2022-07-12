@@ -37,6 +37,7 @@ extern "C" {
 #include "freertos/timers.h"
 
 // divece info which defined in explorer platform
+static TimerHandle_t ota_reboot_timer;
 
 int ble_get_mac(char *mac)
 {
@@ -147,6 +148,25 @@ int ble_ota_write_flash(uint32_t flash_addr, const char *write_buf, uint16_t wri
 
     return ret == ESP_OK ? write_len : ret;
 }
+
+static void ble_ota_reboot_timer(void *param)
+{
+    esp_restart();
+}
+    
+void ble_qiot_ota_final_handle(uint8_t result)
+{
+    ble_qiot_log_i("ble ota_final_handle, result %d\r\n", result);
+    if (result == BLE_QIOT_OTA_SUCCESS) {
+        esp_partition_t *partition = esp_ota_get_next_update_partition(NULL);
+        esp_ota_set_boot_partition(partition);
+        ble_qiot_log_i("ota success, device restart after 5 seconds\r\n");
+        ota_reboot_timer = xTimerCreate("reboot_timer", 5000 / portTICK_PERIOD_MS, pdFALSE, NULL, ble_ota_reboot_timer);
+        xTimerStart(ota_reboot_timer, portMAX_DELAY);
+    }
+    return;
+}
+
 
 #ifdef __cplusplus
 }

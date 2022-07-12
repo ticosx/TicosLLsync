@@ -7,6 +7,8 @@ using std::string;
 using neb::CJsonObject;
 
 extern "C" void ble_qiot_service_init(void);
+extern "C" void ble_qiot_ota_final_handle(uint8_t result);
+
 void LLsync::Start(void)
 {
     if (_running)
@@ -28,6 +30,8 @@ void LLsync::ota_start_cb()
 void LLsync::ota_stop_cb(uint8_t result)
 {
     Event evt = OTA_SUCCESS;
+
+    ble_qiot_ota_final_handle(result);
     if (result) {
         evt = OTA_FAIL;
     }
