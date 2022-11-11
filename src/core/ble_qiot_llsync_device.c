@@ -457,6 +457,7 @@ ble_qiot_ret_status_t ble_init_flash_data(void)
     if (sg_core_data.bind_state > E_LLSYNC_BIND_SUCC) {
         memset(&sg_core_data, 0, sizeof(sg_core_data));
     }
+    //memset(&sg_core_data, 0, sizeof(sg_core_data));//每次上电先擦除绑定信息
 
     if (0 != ble_get_psk(sg_device_info.psk)) {
         ble_qiot_log_e("llsync get device secret key failed");

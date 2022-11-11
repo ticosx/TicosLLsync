@@ -64,9 +64,9 @@ extern "C" {
 // timestamp
 #define BLE_QIOT_LOG_PRINT(...) printf(__VA_ARGS__)
 
-#define BLE_QIOT_LLSYNC_STANDARD    1   // support llsync standard
+#define BLE_QIOT_LLSYNC_STANDARD     1   // support llsync standard
 #if BLE_QIOT_LLSYNC_STANDARD
-    #define BLE_QIOT_DYNREG_ENABLE  0
+    #define BLE_QIOT_DYNREG_ENABLE   0
 // some users hope to confirm on the device before the binding, set BLE_QIOT_SECURE_BIND is 1 to enable the secure
 // binding and enable secure bind in iot-explorer console. When the server is bound, the device callback ble_secure_bind_user_cb()
 // will be triggered, the user agree or refuse connect by ble_secure_bind_user_confirm(). If the device does not respond
@@ -78,7 +78,7 @@ extern "C" {
 #endif //BLE_QIOT_SECURE_BIND
 
 // some sdk info needs to stored on the device and the address is up to you
-#define BLE_QIOT_RECORD_FLASH_ADDR      0x670000
+#define BLE_QIOT_RECORD_FLASH_ADDR      0x3FD000//存放地址，需要按方案修改
 #define BLE_QIOT_RECORD_FLASH_PAGESIZE  4096     // flash page size, see chip datasheet
 
 // define user develop version, pick from "a-zA-Z0-9.-_" and length limits 1～32 bytes.
@@ -95,11 +95,11 @@ extern "C" {
         #endif //BLE_QIOT_SUPPORT_RESUMING
 
         #define BLE_QIOT_TOTAL_PACKAGES 0xFF  // the total package numbers in a loop
-        #define BLE_QIOT_PACKAGE_LENGTH 0x70  // the user data length in package, ble_get_user_data_mtu_size() - 3 is the max
+        #define BLE_QIOT_PACKAGE_LENGTH 0xFA//0x70  // the user data length in package, ble_get_user_data_mtu_size() - 3 is the max
         #define BLE_QIOT_RETRY_TIMEOUT  0x5   // the max interval between two packages, unit: second
         // the time spent for device reboot, the server waiting the device version reported after upgrade. unit: second
         #define BLE_QIOT_REBOOT_TIME      20
-        #define BLE_QIOT_PACKAGE_INTERVAL 0x05  // the interval between two packages send by the server
+        #define BLE_QIOT_PACKAGE_INTERVAL 0x02//0x05  // the interval between two packages send by the server
         // the package from the server will storage in the buffer, write the buffer to the flash at one time when the buffer
         // overflow. reduce the flash write can speed up file download, we suggest the BLE_QIOT_OTA_BUF_SIZE is multiples
         // of BLE_QIOT_PACKAGE_LENGTH and equal flash page size

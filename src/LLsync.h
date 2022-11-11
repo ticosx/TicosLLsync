@@ -6,6 +6,7 @@
 #include <list>
 #include "core/ble_qiot_export.h"
 #include "ThingModel.h"
+#include "Log.h"
 
 class LLsync
 {
