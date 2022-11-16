@@ -9,8 +9,8 @@
  * limitations under the License.
  *
  */
-#ifndef QCLOUD_BLE_IOT_SERVICE_H_
-#define QCLOUD_BLE_IOT_SERVICE_H_
+#ifndef TENCENTCLOUD_IOT_EXPLORER_BLE_SDK_EMBEDDED_INTERNAL_INC_BLE_QIOT_SERVICE_H_
+#define TENCENTCLOUD_IOT_EXPLORER_BLE_SDK_EMBEDDED_INTERNAL_INC_BLE_QIOT_SERVICE_H_
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -20,6 +20,9 @@ extern "C" {
 #include "ble_qiot_export.h"
 #include "ble_qiot_llsync_data.h"
 #include "ble_qiot_template.h"
+
+extern void ble_qiot_dev_start(void);
+typedef void (*ble_qiot_dev_start_cb)(void);
 
 // message type, reference data template
 enum {
@@ -72,13 +75,13 @@ enum {
 };
 
 // msg header define, bit 7-6 is msg type, bit 5 means request or reply, bit 4 - 0 is id
-#define	BLE_QIOT_PARSE_MSG_HEAD_TYPE(_C)        	(((_C) & 0XFF) >> 6)
-#define	BLE_QIOT_PARSE_MSG_HEAD_EFFECT(_C)      	((((_C) & 0XFF) & 0X20) ? BLE_QIOT_EFFECT_REPLY : BLE_QIOT_EFFECT_REQUEST)
-#define	BLE_QIOT_PARSE_MSG_HEAD_ID(_C)          	((_C) & 0X1F)
+#define BLE_QIOT_PARSE_MSG_HEAD_TYPE(_C)        (((_C) & 0XFF) >> 6)
+#define BLE_QIOT_PARSE_MSG_HEAD_EFFECT(_C)      ((((_C) & 0XFF) & 0X20)?BLE_QIOT_EFFECT_REPLY:BLE_QIOT_EFFECT_REQUEST)
+#define BLE_QIOT_PARSE_MSG_HEAD_ID(_C)          ((_C) & 0X1F)
 
 // tlv header define, bit 7 - 5 is type, bit 4 - 0 depends on type of data template
-#define	BLE_QIOT_PARSE_TLV_HEAD_TYPE(_C)        	(((_C) & 0XFF) >> 5)
-#define	BLE_QIOT_PARSE_TLV_HEAD_ID(_C)          	((_C) & 0X1F)
+#define BLE_QIOT_PARSE_TLV_HEAD_TYPE(_C)        (((_C) & 0XFF) >> 5)
+#define BLE_QIOT_PARSE_TLV_HEAD_ID(_C)          ((_C) & 0X1F)
 
 // handle llsync device info
 // return 0 is success, other is error
@@ -92,7 +95,10 @@ int ble_lldata_msg_handle(const char *in_buf, int in_len);
 // return 0 is success, other is error
 int ble_ota_msg_handle(const char *buf, uint16_t len);
 
+// Equipment is ready
+void ble_dev_start_user_inform(void);
+
 #ifdef __cplusplus
 }
 #endif
-#endif  // QCLOUD_BLE_IOT_SERVICE_H_
+#endif  // TENCENTCLOUD_IOT_EXPLORER_BLE_SDK_EMBEDDED_INTERNAL_INC_BLE_QIOT_SERVICE_H_

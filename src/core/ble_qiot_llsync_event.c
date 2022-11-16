@@ -35,7 +35,7 @@ ble_qiot_ret_status_t ble_event_report_device_info(uint8_t type)
 #if BLE_QIOT_REMOTE_SET_MTU
     mtu_size = LLSYNC_MTU_SET_MASK;
 #endif //BLE_QIOT_REMOTE_SET_MTU
-    mtu_size |= ble_get_user_data_mtu_size();
+    mtu_size |= ble_get_user_data_mtu_size(ble_system_type_get());
     mtu_size       = HTONS(mtu_size);
     device_info[0] = BLE_QIOT_LLSYNC_PROTOCOL_VERSION;
     memcpy(&device_info[1], &mtu_size, sizeof(mtu_size));
@@ -120,7 +120,7 @@ ble_qiot_ret_status_t ble_event_notify2(uint8_t type, uint8_t length_flag, uint8
             send_len = send_buf_index;
         }
 
-        ble_qiot_log_hex(BLE_QIOT_LOG_LEVEL_INFO, "post data", (char *)send_buf, send_len);
+        //ble_qiot_log_hex(BLE_QIOT_LOG_LEVEL_INFO, "post data", (char *)send_buf, send_len);
         if (0 != ble_send_notify(send_buf, send_len)) {
             ble_qiot_log_e("event(type: %d) post failed, len: %d", type, send_len);
             return BLE_QIOT_RS_ERR;

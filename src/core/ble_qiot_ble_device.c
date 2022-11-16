@@ -114,7 +114,7 @@ ble_qiot_ret_status_t ble_timer_delete(ble_timer_t timer_id)
 }
 
 // return ATT MTU
-uint16_t ble_get_user_data_mtu_size(void)
+uint16_t ble_get_user_data_mtu_size(e_system type)
 {
     return BLE_QIOT_EVENT_BUF_SIZE;
 }

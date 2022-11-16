@@ -9,8 +9,8 @@
  * limitations under the License.
  *
  */
-#ifndef QCLOUD_BLE_QIOT_IMPORT_H
-#define QCLOUD_BLE_QIOT_IMPORT_H
+#ifndef TENCENTCLOUD_IOT_EXPLORER_BLE_SDK_EMBEDDED_INC_BLE_QIOT_IMPORT_H_
+#define TENCENTCLOUD_IOT_EXPLORER_BLE_SDK_EMBEDDED_INC_BLE_QIOT_IMPORT_H_
 
 #if defined(__cplusplus)
 extern "C" {
@@ -65,9 +65,10 @@ ble_qiot_ret_status_t ble_advertising_stop(void);
 
 /**
  * @brief get the ATT_MTU user want to used
+ * @param type Type of system currently paired
  * @return the value
  */
-uint16_t ble_get_user_data_mtu_size(void);
+uint16_t ble_get_user_data_mtu_size(e_system type);
 
 /**
  * @brief send a notification to host, use characteristic IOT_BLE_UUID_EVENT
@@ -221,7 +222,14 @@ uint32_t ble_ota_get_download_addr(void);
  * @return write_len is success, other is error
  */
 int ble_ota_write_flash(uint32_t flash_addr, const char *write_buf, uint16_t write_len);
-#endif //BLE_QIOT_LLSYNC_STANDARD
+
+/**
+ * @brief Equipment is ready
+ * @return void
+ */
+void ble_qiot_dev_start(void);
+
+#endif  // BLE_QIOT_LLSYNC_STANDARD
 
 #if BLE_QIOT_LLSYNC_CONFIG_NET
 /**
@@ -239,7 +247,8 @@ ble_qiot_ret_status_t ble_combo_wifi_mode_set(BLE_WIFI_MODE mode);
  * @param passwd_len the length of password
  * @return BLE_QIOT_RS_OK is success, other is error
  */
-ble_qiot_ret_status_t ble_combo_wifi_info_set(const char *ssid, uint8_t ssid_len, const char *passwd, uint8_t passwd_len);
+ble_qiot_ret_status_t ble_combo_wifi_info_set(const char *ssid, uint8_t ssid_len,
+                                                const char *passwd, uint8_t passwd_len);
 
 /**
  * @brief connect wifi
@@ -262,10 +271,10 @@ ble_qiot_ret_status_t ble_combo_wifi_token_set(const char *token, uint16_t token
  * @return BLE_QIOT_RS_OK is success, other is error
  */
 ble_qiot_ret_status_t ble_combo_wifi_log_get(void);
-#endif //BLE_QIOT_LLSYNC_CONFIG_NET
+#endif  // BLE_QIOT_LLSYNC_CONFIG_NET
 
 #if defined(__cplusplus)
 }
 #endif
 
-#endif  // QCLOUD_BLE_QIOT_IMPORT_H
+#endif  // TENCENTCLOUD_IOT_EXPLORER_BLE_SDK_EMBEDDED_INC_BLE_QIOT_IMPORT_H_

@@ -35,7 +35,7 @@ void ble_qiot_log_hex(e_ble_qiot_log_level level, const char *hex_name, const ch
     char buf[HEX_DUMP_BYTE_PER_LINE * 5] = {0};
     int  line_count = 0, line = 0, byte = 0, rest = 0, start_byte = 0;
 
-    if (llsync_g_log_level < level)
+    if (g_log_level < level)
         return;
 
     line_count = data_len / HEX_DUMP_BYTE_PER_LINE;

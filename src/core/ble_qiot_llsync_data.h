@@ -9,8 +9,8 @@
  * limitations under the License.
  *
  */
-#ifndef QCLOUD_BLE_QIOT_LLSYNC_DATA_H
-#define QCLOUD_BLE_QIOT_LLSYNC_DATA_H
+#ifndef TENCENTCLOUD_IOT_EXPLORER_BLE_SDK_EMBEDDED_INTERNAL_INC_BLE_QIOT_LLSYNC_DATA_H_
+#define TENCENTCLOUD_IOT_EXPLORER_BLE_SDK_EMBEDDED_INTERNAL_INC_BLE_QIOT_LLSYNC_DATA_H_
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -41,4 +41,4 @@ ble_qiot_ret_status_t ble_user_property_get_report_data(uint8_t start_id, uint8_
 #ifdef __cplusplus
 }
 #endif
-#endif  // QCLOUD_BLE_QIOT_LLSYNC_DATA_H
+#endif  // TENCENTCLOUD_IOT_EXPLORER_BLE_SDK_EMBEDDED_INTERNAL_INC_BLE_QIOT_LLSYNC_DATA_H_

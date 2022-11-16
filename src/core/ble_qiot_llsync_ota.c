@@ -248,7 +248,7 @@ static ble_qiot_ret_status_t ble_ota_init(void)
 #if BLE_QIOT_SUPPORT_RESUMING
     // start from 0 if read flash fail, but ota will continue so ignored the return code
     ble_read_flash(BLE_QIOT_OTA_INFO_FLASH_ADDR, (char *)&sg_ota_info, sizeof(sg_ota_info));
-    ble_qiot_log_hex(BLE_QIOT_LOG_LEVEL_INFO, "ota info", &sg_ota_info, sizeof(sg_ota_info));
+    //ble_qiot_log_hex(BLE_QIOT_LOG_LEVEL_INFO, "ota info", &sg_ota_info, sizeof(sg_ota_info));
     // check if the valid flag legalled
     if (ble_qiot_ota_info_valid()) {
         // the ota info write to flash may be mismatch the file write to flash, we should download file from the byte

@@ -31,6 +31,7 @@ extern "C" {
 
 // llsync support data fragment, so we need to package all the data before parsing if the data is slice
 static ble_event_slice_t sg_ble_slice_data;
+static ble_qiot_dev_start_cb sg_ble_qiot_dev_start_cb = NULL;
 
 #if BLE_QIOT_BUTTON_BROADCAST
 static ble_timer_t sg_bind_timer = NULL;
@@ -198,6 +199,13 @@ ble_qiot_ret_status_t ble_qiot_advertising_stop(void)
     return 0 == ble_advertising_stop() ? BLE_QIOT_RS_OK : BLE_QIOT_RS_ERR;
 }
 
+void ble_dev_start_user_inform(void)
+{
+    if (sg_ble_qiot_dev_start_cb) {
+        sg_ble_qiot_dev_start_cb();
+    }
+}
+
 ble_qiot_ret_status_t ble_qiot_explorer_init(void)
 {
     ble_qiot_ret_status_t      ret_code     = BLE_QIOT_RS_OK;
@@ -214,6 +222,8 @@ ble_qiot_ret_status_t ble_qiot_explorer_init(void)
         return ret_code;
     }
 
+   // sg_ble_qiot_dev_start_cb = ble_qiot_dev_start;
+
     return ret_code;
 }
 
@@ -228,14 +238,12 @@ void ble_gap_connect_cb(void)
     ble_connection_state_set(E_BLE_CONNECTED);
 }
 
-void llsync_connect_status_notify(int status);
 // when gap get ble disconnect event, use this function
 void ble_gap_disconnect_cb(void)
 {
     llsync_mtu_update(0);
     llsync_connection_state_set(E_LLSYNC_DISCONNECTED);
     ble_connection_state_set(E_BLE_DISCONNECTED);
-    llsync_connect_status_notify(E_LLSYNC_DISCONNECTED);
 #if BLE_QIOT_SUPPORT_OTA
     ble_ota_stop();
 #endif  // BLE_QIOT_SUPPORT_OTA
@@ -379,6 +387,7 @@ int ble_device_info_msg_handle(const char *in_buf, int in_len)
                 ble_qiot_log_e("write bind result failed");
                 ret = BLE_QIOT_RS_ERR;
             }
+            ble_system_type_set(SYSTEM_IS_ANDROID);
             break;
         case E_DEV_MSG_BIND_FAIL:
             ble_qiot_log_i("get msg bind fail");
@@ -399,7 +408,6 @@ int ble_device_info_msg_handle(const char *in_buf, int in_len)
             conn_flag = false;
             ble_qiot_log_i("get msg connect success");
             llsync_connection_state_set(E_LLSYNC_CONNECTED);
-            llsync_connect_status_notify(E_LLSYNC_CONNECTED);
             ret = ble_event_report_device_info(E_REPORT_DEVINFO);
             break;
         case E_DEV_MSG_CONN_FAIL:
@@ -470,6 +478,13 @@ int ble_device_info_msg_handle(const char *in_buf, int in_len)
         case E_DEV_MSG_SET_MTU_RESULT:
             ble_inform_mtu_result(p_data + 1, p_data_len - 1);
             break;
+        case E_DEV_MSG_DEV_START:
+            // Device start-up is complete and actions such as attribute reporting can be performed
+            ble_dev_start_user_inform();
+            break;
+        case E_DEV_MSG_IOS_SYSTEM:
+            ble_system_type_set(SYSTEM_IS_IOS);
+            break;
         default:
             ble_qiot_log_e("unknow type %d", ch);
             break;
@@ -505,7 +520,7 @@ int ble_lldata_msg_handle(const char *in_buf, int in_len)
     p_data_len = in_len;
 
     data_type = BLE_QIOT_PARSE_MSG_HEAD_TYPE(in_buf[0]);
-    if (data_type >= BLE_QIOT_MSG_TYPE_BUTT) {
+    if (data_type >= BLE_QIOT_DATA_TYPE_BUTT) {
         ble_qiot_log_e("invalid data type: %d", data_type);
         return BLE_QIOT_RS_ERR;
     }
@@ -616,7 +631,7 @@ int ble_ota_msg_handle(const char *buf, uint16_t len)
 
     // ble_qiot_log_i("ota data type %d, flag %d", data_type, slice_flag);
     if (BLE_QIOT_IS_SLICE_PACKAGE(slice_flag)) {
-        ble_qiot_log_hex(BLE_QIOT_LOG_LEVEL_INFO, "tlv", p_data, p_data_len);
+       // ble_qiot_log_hex(BLE_QIOT_LOG_LEVEL_INFO, "tlv", p_data, p_data_len);
         header_len = ble_ota_type_header_len(data_type);
         ret        = ble_package_slice_data(data_type, slice_flag, header_len, buf, len);
         if (ret < 0) {
